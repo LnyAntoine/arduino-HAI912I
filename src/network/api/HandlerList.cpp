@@ -15,6 +15,29 @@ HandlerList::HandlerList() {
 
     addHandler(
         Route(
+            "/help",
+            HTTP_GET,
+            [this](WebServer& server) {
+                StaticJsonDocument<2048> doc;
+                JsonArray routesArray = doc.createNestedArray("routes");
+
+                for (const Route& route : handlers) {
+                    JsonObject routeObj = routesArray.createNestedObject();
+                    routeObj["path"] = route.getPath();
+                    routeObj["method"] = route.getMethodString();
+                    routeObj["description"] = route.getDescription();
+                }
+
+                String json;
+                serializeJson(doc, json);
+                server.send(200, "application/json", json);
+            },
+            "Liste toutes les routes disponibles avec leurs méthodes et descriptions"
+        )
+    );
+
+    addHandler(
+        Route(
             "/led/on",
             HTTP_POST,
             [](WebServer& server) {
@@ -228,16 +251,16 @@ HandlerList::HandlerList() {
     );
 }
 
-void HandlerList::handleSingleSensor(WebServer& server, int sensor) {
+void HandlerList::handleSingleSensor(WebServer& server, const int sensor) {
     auto sensorManager = SensorManager::getInstance();
     if (!sensorManager) {
-        server.send(500, "application/json", "{\"error\":\"SensorManager not initialized\"}");
+        server.send(500, "application/json", R"({"error":"SensorManager not initialized"})");
         return;
     }
 
     SensorService *sensorService = sensorManager->getSensorById(sensor);
     if (!sensorService) {
-        server.send(404, "application/json", "{\"error\":\"Sensor not found\"}");
+        server.send(404, "application/json", R"({"error":"Sensor not found"})");
         return;
     }
 
@@ -256,16 +279,16 @@ void HandlerList::handleSingleSensor(WebServer& server, int sensor) {
     server.send(200, "application/json", json);
 }
 void HandlerList::handleAllSensors(WebServer& server) {
-    auto sensorManager = SensorManager::getInstance();
+    const auto sensorManager = SensorManager::getInstance();
     if (!sensorManager) {
-        server.send(500, "application/json", "{\"error\":\"SensorManager not initialized\"}");
+        server.send(500, "application/json", R"({"error":"SensorManager not initialized"})");
         return;
     }
 
-    std::vector<SensorService *> sensors = sensorManager->getAllSensors();
+    const std::vector<SensorService *> sensors = sensorManager->getAllSensors();
 
     StaticJsonDocument<1024> doc;
-    JsonArray sensorsArray = doc.createNestedArray("sensors");
+    const JsonArray sensorsArray = doc.createNestedArray("sensors");
 
     for (SensorService *sensorService : sensors) {
         if (!sensorService) continue;
@@ -283,19 +306,19 @@ void HandlerList::handleAllSensors(WebServer& server) {
     server.send(200, "application/json", json);
 }
 
-void HandlerList::handleMultipleSensors(WebServer& server, String ids) {
-    std::vector<int> sensorIds = StringUtils::splitIds(ids);
+void HandlerList::handleMultipleSensors(WebServer& server, const String& ids) {
+    const std::vector<int> sensorIds = StringUtils::splitIds(ids);
 
-    auto sensorManager = SensorManager::getInstance();
+    const auto sensorManager = SensorManager::getInstance();
     if (!sensorManager) {
-        server.send(500, "application/json", "{\"error\":\"SensorManager not initialized\"}");
+        server.send(500, "application/json", R"({"error":"SensorManager not initialized"})");
         return;
     }
 
-    std::vector<SensorService *> sensors = sensorManager->getSensorsByIds(sensorIds);
+    const std::vector<SensorService *> sensors = sensorManager->getSensorsByIds(sensorIds);
 
     StaticJsonDocument<1024> doc;
-    JsonArray sensorsArray = doc.createNestedArray("sensors");
+    const JsonArray sensorsArray = doc.createNestedArray("sensors");
 
     for (SensorService *sensorService : sensors) {
         if (!sensorService) continue;

@@ -19,7 +19,7 @@ public:
     int getHandlersSize();
     void addHandler(const Route& handler);
 
-    static void handleMultipleSensors(WebServer &server, String ids);
+    static void handleMultipleSensors(WebServer &server, const String &ids);
 
     static void handleAllSensors(WebServer &server);
 };

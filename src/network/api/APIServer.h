@@ -29,7 +29,7 @@ public:
      * @param port Port du serveur (par défaut 80)
      * @param handlers la liste de handlers
      */
-    APIServer(int port = 80,HandlerList* handlers=nullptr);
+    explicit APIServer(int port = 80,HandlerList* handlers=nullptr);
 
     /**
      * @brief Ajoute une route à la liste

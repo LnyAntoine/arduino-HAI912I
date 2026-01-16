@@ -10,7 +10,7 @@ LightService::LightService() {
     lightPosition = LIGHT_PIN;
     value = 0;
     oldValue = 0;
-    unit = "Lumen";
+    unit = "Lux";
     name = "Light Sensor";
 }
 

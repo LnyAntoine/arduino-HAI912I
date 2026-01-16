@@ -13,7 +13,7 @@ void APIServer::addRoute(const Route& route) {
 }
 
 void APIServer::registerRoutes() {
-    for (Route route : handlers->getHandlers()) {
+    for (const Route& route : handlers->getHandlers()) {
         addRoute(route);
     }
 }
