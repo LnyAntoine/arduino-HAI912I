@@ -1,0 +1,8 @@
+#!/bin/bash
+# Empêche tout commit contenant src/wifiConfig.h
+if git diff --cached --name-only | grep -q '^src/wifiConfig.h$'; then
+  echo "Erreur: ne pas committer des modifications de src/wifiConfig.h"
+  exit 1
+fi
+exit 0
+
