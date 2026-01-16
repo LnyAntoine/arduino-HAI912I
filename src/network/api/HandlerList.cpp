@@ -11,7 +11,7 @@
 #include "services/sensors/SensorService.h"
 
 HandlerList::HandlerList() {
-    //Rajouter les Handler
+    // Enregistrement des routes API
 
     addHandler(
         Route(
@@ -32,7 +32,7 @@ HandlerList::HandlerList() {
                 serializeJson(doc, json);
                 server.send(200, "application/json", json);
             },
-            "Liste toutes les routes disponibles avec leurs méthodes et descriptions"
+            "Liste toutes les routes disponibles avec leurs methodes et descriptions"
         )
     );
 
@@ -42,7 +42,7 @@ HandlerList::HandlerList() {
             HTTP_POST,
             [](WebServer& server) {
                     LedService::getInstance()->ledOn();
-                    server.send(200, "text/plain", "Led allumée");
+                    server.send(200, "text/plain", "Led allumee");
                 },
                 "Allume la led"
             )
@@ -54,7 +54,7 @@ HandlerList::HandlerList() {
             HTTP_POST,
             [](WebServer& server) {
                     LedService::getInstance()->ledOff();
-                    server.send(200, "text/plain", "Led éteinte");
+                    server.send(200, "text/plain", "Led eteinte");
                 },
                 "Eteint la led"
             )
@@ -125,7 +125,7 @@ HandlerList::HandlerList() {
                     LedService *ledService = LedService::getInstance();
 
                     ledService->setSensorTreshold(threshold_sensor, threshold_val, threshold_mode);
-                    server.send(200, "text/plain", "Threshold modifié");
+                    server.send(200, "text/plain", "Threshold modifie");
                 },
                 "Change le threshold"
             )
@@ -137,7 +137,7 @@ HandlerList::HandlerList() {
             HTTP_DELETE,
             [](WebServer& server) {
                     LedService::getInstance()->deleteThreshold();
-                    server.send(200, "text/plain", "Threshold supprimé");
+                    server.send(200, "text/plain", "Threshold supprime");
                 },
                 "Supprime le threshold"
             )
@@ -163,7 +163,7 @@ HandlerList::HandlerList() {
                     serializeJson(doc, json);
                     server.send(200, "application/json", json);
                 },
-                "Récupère les informations du threshold"
+                "Recupere les informations du threshold"
             )
     );
 
@@ -187,7 +187,7 @@ HandlerList::HandlerList() {
 
                     handleAllSensors(server);
                 },
-                "Récupère les informations du/des sensors"
+                "Recupere les informations du/des sensors"
             )
     );
 
@@ -246,11 +246,14 @@ HandlerList::HandlerList() {
                 serializeJson(doc, json);
                 server.send(200, "application/json", json);
                 },
-                "Récupère des informations sur beaucoup de trucs hein"
+                "Recupere des informations combinees (led, sensors, threshold)"
             )
     );
 }
 
+// Gere la requete pour un seul capteur
+
+// Gere la requete pour un seul capteur
 void HandlerList::handleSingleSensor(WebServer& server, const int sensor) {
     auto sensorManager = SensorManager::getInstance();
     if (!sensorManager) {
@@ -278,6 +281,8 @@ void HandlerList::handleSingleSensor(WebServer& server, const int sensor) {
     serializeJson(doc, json);
     server.send(200, "application/json", json);
 }
+
+// Gere la requete pour tous les capteurs
 void HandlerList::handleAllSensors(WebServer& server) {
     const auto sensorManager = SensorManager::getInstance();
     if (!sensorManager) {
@@ -306,6 +311,7 @@ void HandlerList::handleAllSensors(WebServer& server) {
     server.send(200, "application/json", json);
 }
 
+// Gere la requete pour plusieurs capteurs specifiques
 void HandlerList::handleMultipleSensors(WebServer& server, const String& ids) {
     const std::vector<int> sensorIds = StringUtils::splitIds(ids);
 
@@ -336,11 +342,12 @@ void HandlerList::handleMultipleSensors(WebServer& server, const String& ids) {
     server.send(200, "application/json", json);
 }
 
-
+// Ajoute une route a la liste des handlers
 void HandlerList::addHandler(const Route& handler) {
     handlers.push_back(handler);
 }
 
+// Retourne la liste de tous les handlers
 std::vector<Route> HandlerList::getHandlers() {
     return handlers;
 }

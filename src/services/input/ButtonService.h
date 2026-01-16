@@ -17,9 +17,9 @@ enum ButtonEvent {
     BUTTON_RIGHT_LONG_PRESS
 };
 
+// Service de gestion des boutons avec debounce et detection d'appui long
 class ButtonService {
 private:
-
     unsigned long lastDebounceLeft;
     unsigned long lastDebounceRight;
     bool lastStateLeft;
@@ -35,7 +35,10 @@ private:
 public:
     static ButtonService* getInstance();
 
+    // Initialise les pins des boutons
     static void begin();
+
+    // Verifie l'etat des boutons et retourne l'evenement detecte
     ButtonEvent checkButtons();
 };
 

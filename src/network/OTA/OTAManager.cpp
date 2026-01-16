@@ -4,15 +4,18 @@
 
 #include "OTAManager.h"
 
+// Configure le mot de passe OTA
 void OTAManager::setPassword(const char* password) {
     _password = password;
 
 }
 
+// Configure le port OTA
 void OTAManager::setPort(uint16_t port) {
     _port = port;
 }
 
+// Active ou desactive les logs de debug
 void OTAManager::setDebug(bool enable) {
     _debug = enable;
 }
@@ -28,81 +31,68 @@ OTAManager::OTAManager(const char* hostname)
 bool OTAManager::begin() {
     if (WiFi.status() != WL_CONNECTED) {
         if (_debug) {
-            Serial.println("[OTA] Erreur: WiFi non connecté !");
+            Serial.println("[OTA] Erreur: WiFi non connecte!");
         }
         return false;
     }
 
     ArduinoOTA.setHostname(_hostname);
-
     ArduinoOTA.setPort(_port);
 
     if (_password != nullptr && strlen(_password) > 0) {
         ArduinoOTA.setPassword(_password);
         if (_debug) {
-            Serial.println("[OTA] Mot de passe activé");
+            Serial.println("[OTA] Mot de passe active");
         }
     }
-    ArduinoOTA.onStart([]() {
 
+    ArduinoOTA.onStart([]() {
         String type;
         if (ArduinoOTA.getCommand() == U_FLASH) {
-            type = "sketch";      // Mise à jour du programme
+            type = "sketch";
         } else {
-            type = "filesystem";  // Mise à jour du système de fichiers
+            type = "filesystem";
         }
-        Serial.println("\n[OTA] Début de la mise à jour: " + type);
+        Serial.println("[OTA] Debut de la mise a jour: " + type);
     });
 
     ArduinoOTA.onEnd([]() {
-        Serial.println("\n[OTA] Mise à jour terminée !");
+        Serial.println("[OTA] Mise a jour terminee!");
     });
 
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-
         unsigned int percent = (progress / (total / 100));
-        // Calcule le pourcentage : (octets reçus / total) * 100
-
         Serial.printf("[OTA] Progression: %u%%\r", percent);
     });
-    ArduinoOTA.onError([](ota_error_t error) {
-        // ota_error_t = type d'erreur (enum)
 
-        Serial.printf("\n[OTA] Erreur[%u]: ", error);
+    ArduinoOTA.onError([](ota_error_t error) {
+        Serial.printf("[OTA] Erreur[%u]: ", error);
 
         if (error == OTA_AUTH_ERROR) {
-            Serial.println("Échec d'authentification");
-            // Mauvais mot de passe
+            Serial.println("Echec d'authentification");
         } else if (error == OTA_BEGIN_ERROR) {
-            Serial.println("Échec du démarrage");
-            // Impossible de commencer (pas assez de mémoire ?)
+            Serial.println("Echec du demarrage");
         } else if (error == OTA_CONNECT_ERROR) {
-            Serial.println("Échec de connexion");
-            // Problème réseau
+            Serial.println("Echec de connexion");
         } else if (error == OTA_RECEIVE_ERROR) {
-            Serial.println("Échec de réception");
-            // Données corrompues
+            Serial.println("Echec de reception");
         } else if (error == OTA_END_ERROR) {
-            Serial.println("Échec de finalisation");
-            // Impossible de finaliser la mise à jour
+            Serial.println("Echec de finalisation");
         }
     });
 
     ArduinoOTA.begin();
-    // Lance le serveur OTA sur le port 3232
-    // L'ESP32 écoute maintenant les demandes de mise à jour
-
     _initialized = true;
 
     if (_debug) {
-        Serial.println("\n✓ OTA initialisé avec succès");
+        Serial.println("OTA initialise avec succes");
         Serial.printf("  Hostname: %s\n", _hostname);
         Serial.printf("  IP: %s\n", WiFi.localIP().toString().c_str());
         Serial.printf("  Port: %d\n", _port);
-        Serial.println("  Prêt pour les mises à jour OTA !");
+        Serial.println("  Pret pour les mises a jour OTA!");
     }
 
-    return true;  // ↑ Succès !
+    return true;
 }
 
 void OTAManager::handle() {

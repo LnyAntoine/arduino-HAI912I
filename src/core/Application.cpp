@@ -22,11 +22,12 @@ Application::~Application() {
     delete ota;
 }
 
+// Initialise tous les composants de l'application
 void Application::initialize() {
     Serial.begin(115200);
     delay(1000);
     analogSetAttenuation(ADC_11db);
-    Serial.println("\n\nDémarrage...");
+    Serial.println("Demarrage...");
 
     // Initialisation des services
     display = DisplayService::getInstance();
@@ -37,33 +38,27 @@ void Application::initialize() {
 
     sensors = SensorManager::getInstance();
     if (!sensors) {
-        Serial.println("Erreur: SensorManager non initialisé");
+        Serial.println("Erreur: SensorManager non initialise");
         return;
     }
-    Serial.printf("SensorManager initialisé avec %d capteurs\n",
-                  sensors->getAllSensors().size());
 
     leds = LedService::getInstance();
     if (!leds) {
-        Serial.println("Erreur: LedService non initialisé");
+        Serial.println("Erreur: LedService non initialise");
         return;
     }
 
-    // WiFi et réseau
+    // Connexion WiFi et services reseau
     display->showWiFiStatus("Connexion...");
     initializeWiFi();
 
-    // OTA
     ota = new OTAManager("TTGO-Meteo");
-    if (ota->begin()) {
-        Serial.println("OTA prêt !");
-    }
+    ota->begin();
 
-    // API Server
     HandlerList* handlers = new HandlerList();
     apiServer = new APIServer(80, handlers);
     apiServer->begin();
-    Serial.println("\nServer API Connecté\n");
+    Serial.println("Server API connecte");
 
     // Affichage initial
     display->showWiFiStatus(WiFi.localIP().toString());
@@ -71,6 +66,7 @@ void Application::initialize() {
     display->showSensorData(0);
 }
 
+// Connecte l'appareil au WiFi
 void Application::initializeWiFi() {
     Serial.print("Connexion au WiFi");
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -80,22 +76,24 @@ void Application::initializeWiFi() {
         Serial.print(".");
     }
 
-    Serial.println("\nConnecté !");
+    Serial.println("\nConnecte!");
     Serial.print("Adresse IP: ");
     Serial.println(WiFi.localIP());
 }
 
+// Boucle principale de mise a jour
 void Application::update() {
-    // Mise à jour des services réseau
+    // Mise a jour des services reseau
     if (apiServer) apiServer->handleClient();
     if (ota) ota->handle();
 
-    // Gestion des événements
+    // Gestion des evenements
     handleButtonEvents();
     updateDisplay();
     updateLeds();
 }
 
+// Gere les evenements des boutons (changement de menu)
 void Application::handleButtonEvents() {
     if (!buttons) return;
 
@@ -113,6 +111,7 @@ void Application::handleButtonEvents() {
     }
 }
 
+// Met a jour l'affichage periodiquement
 void Application::updateDisplay() {
     if (!display) return;
 
@@ -123,6 +122,7 @@ void Application::updateDisplay() {
     }
 }
 
+// Met a jour les LEDs en fonction des seuils
 void Application::updateLeds() {
     if (!leds || !sensors) return;
 

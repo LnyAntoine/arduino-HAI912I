@@ -27,6 +27,7 @@ void DisplayService::begin() {
     digitalWrite(TFT_BL, HIGH);  // Allumer le backlight
 }
 
+// Affiche le statut de connexion WiFi
 void DisplayService::showWiFiStatus(const String& ip) {
     clear();
     tft.setCursor(10, 50);
@@ -35,6 +36,7 @@ void DisplayService::showWiFiStatus(const String& ip) {
     tft.println("IP: " + ip);
 }
 
+// Affiche les informations de seuil
 void DisplayService::showThresholdInfo() {
     clear();
     tft.setCursor(10, 5);
@@ -68,6 +70,7 @@ void DisplayService::showThresholdInfo() {
     tft.printf("Mode de seuil: \n %s", mode.c_str());
 }
 
+// Affiche les donnees d'un capteur specifique
 void DisplayService::showSensorData(const int sensorId) {
     const SensorManager* sensorManager = SensorManager::getInstance();
     if (!sensorManager) {
@@ -88,7 +91,6 @@ void DisplayService::showSensorData(const int sensorId) {
     clear();
     tft.setCursor(10, 70);
     tft.printf("%s: \n %f %s", sensor->getName().c_str(), sensor->readSensor(), sensor->getUnit().c_str());
-    printf("%s: \n %f %s", sensor->getName().c_str(), sensor->readSensor(), sensor->getUnit().c_str());
 }
 
 void DisplayService::clear() {
@@ -103,6 +105,7 @@ void DisplayService::showLedStatus(const bool isOn) {
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
 }
 
+// Affiche le menu correspondant a l'index selectionne
 void DisplayService::show(const int selectedIndex) {
     switch (selectedIndex) {
         case 0:

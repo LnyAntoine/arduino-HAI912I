@@ -1,7 +1,6 @@
 #include "ButtonService.h"
 
-
-ButtonService::ButtonService() 
+ButtonService::ButtonService()
     : lastDebounceLeft(0), lastDebounceRight(0),
       lastStateLeft(HIGH), lastStateRight(HIGH),
       pressStartLeft(0), pressStartRight(0) {}
@@ -11,11 +10,13 @@ ButtonService* ButtonService::getInstance() {
     return &instance;
 }
 
+// Initialise les pins des boutons en mode INPUT_PULLUP
 void ButtonService::begin() {
     pinMode(BUTTON_LEFT, INPUT_PULLUP);
     pinMode(BUTTON_RIGHT, INPUT_PULLUP);
 }
 
+// Verifie l'etat des boutons avec debounce et detection d'appui long
 ButtonEvent ButtonService::checkButtons() {
     const unsigned long now = millis();
     
