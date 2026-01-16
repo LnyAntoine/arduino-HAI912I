@@ -3,7 +3,7 @@
 //
 
 #include "LedService.h"
-#include "../config.h"
+#include "../../config/config.h"
 #include <Arduino.h>
 
 LedService *LedService::getInstance() {

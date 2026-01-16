@@ -5,8 +5,8 @@
 #include "HandlerList.h"
 #include <ArduinoJson.h>
 
-#include "StringUtils.h"
-#include "services/LedService.h"
+#include "utils/StringUtils.h"
+#include "services/output/LedService.h"
 #include "services/sensors/SensorManager.h"
 #include "services/sensors/SensorService.h"
 

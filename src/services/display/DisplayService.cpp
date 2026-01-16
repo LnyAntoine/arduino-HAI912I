@@ -3,10 +3,10 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
-#include "config.h"
-#include "LedService.h"
-#include "sensors/SensorManager.h"
-#include "sensors/SensorService.h"
+#include "config/config.h"
+#include "../output/LedService.h"
+#include "../sensors/SensorManager.h"
+#include "../sensors/SensorService.h"
 
 
 DisplayService::DisplayService() : tft(TFT_eSPI()) {}

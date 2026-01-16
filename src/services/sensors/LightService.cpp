@@ -3,7 +3,7 @@
 //
 
 #include "LightService.h"
-#include "../../config.h"
+#include "../../config/config.h"
 #include <Arduino.h>
 LightService::LightService() {
     id = 0;

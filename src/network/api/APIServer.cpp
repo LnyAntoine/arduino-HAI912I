@@ -1,7 +1,7 @@
 #include "APIServer.h"
 
 #include "HandlerList.h"
-#include "../config.h"
+#include "config/config.h"
 
 APIServer::APIServer(const int port, HandlerList* handlers) : server(port),handlers(handlers), ledState(false) {
     pinMode(LED_PIN, OUTPUT);

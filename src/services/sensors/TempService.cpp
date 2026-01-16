@@ -3,7 +3,7 @@
 //
 
 #include "TempService.h"
-#include "../../config.h"
+#include "../../config/config.h"
 #include <Arduino.h>
 TempService *TempService::getInstance() {
     static TempService instance;
