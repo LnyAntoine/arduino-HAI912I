@@ -68,7 +68,7 @@ HandlerList::HandlerList() {
             LedService *ledService = LedService::getInstance();
 
             ledService->changeStatus();
-            int status = ledService->getStatus();
+            const int status = ledService->getStatus();
 
             StaticJsonDocument<128> doc;
             doc["status"] = status;
