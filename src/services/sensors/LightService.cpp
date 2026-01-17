@@ -22,10 +22,19 @@ LightService *LightService::getInstance() {
 
 float LightService::readSensor() {
     oldValue = value;
-    int photoRaw  = analogRead(getSensorPos()); //Lire le sensor sur getSensorPos
+    const int photoRaw  = analogRead(getSensorPos()); //Lire le sensor sur getSensorPos
     printf("Raw Light value: %d\n", photoRaw);
-    float photoVoltage = photoRaw * (VOLTAGE / 4095.0);
+    const float photoVoltage = photoRaw * (VOLTAGE / 4095.0);
+
+    if (photoVoltage == 0.0f) {
+        return value;
+    }
     float photoResistance = LIGHT_RES * (VOLTAGE - photoVoltage) / photoVoltage;
+
+    if (photoResistance == 0.0f) {
+        return value;
+    }
+
     float lux = 500000.0 / photoResistance;
     value = lux;
     return value;
