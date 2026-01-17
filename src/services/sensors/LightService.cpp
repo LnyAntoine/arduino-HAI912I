@@ -23,7 +23,6 @@ LightService *LightService::getInstance() {
 float LightService::readSensor() {
     oldValue = value;
     const int photoRaw  = analogRead(getSensorPos()); //Lire le sensor sur getSensorPos
-    printf("Raw Light value: %d\n", photoRaw);
     const float photoVoltage = photoRaw * (VOLTAGE / 4095.0);
 
     if (photoVoltage == 0.0f) {

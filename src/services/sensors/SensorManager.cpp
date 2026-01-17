@@ -23,14 +23,17 @@ const std::vector<SensorService *> &SensorManager::getAllSensors() const {
 
 // Recupere un capteur par son ID
 SensorService *SensorManager::getSensorById(const int id) const {
+    if (id < 0 || id >= static_cast<int>(sensors.size())) {
+        return nullptr;
+    }
     return sensors[id];
 }
 
 // Recupere plusieurs capteurs par leurs IDs
 std::vector<SensorService *> SensorManager::getSensorsByIds(const std::vector<int> &ids) const {
     std::vector<SensorService *> tempSensors;
-    for (int i = 0; i < ids.size(); i++) {
-        tempSensors.push_back(getSensorById(ids[i]));
+    for (const int id : ids) {
+        tempSensors.push_back(getSensorById(id));
     }
     return tempSensors;
 }

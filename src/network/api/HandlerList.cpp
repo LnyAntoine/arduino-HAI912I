@@ -124,7 +124,7 @@ HandlerList::HandlerList() {
                     int threshold_mode = doc["mode"];
                     LedService *ledService = LedService::getInstance();
 
-                    ledService->setSensorTreshold(threshold_sensor, threshold_val, threshold_mode);
+                    ledService->setSensorTreshold(threshold_sensor, static_cast<float>(threshold_val), threshold_mode);
                     server.send(200, "text/plain", "Threshold modifie");
                 },
                 "Change le threshold"
@@ -196,7 +196,39 @@ HandlerList::HandlerList() {
             "/status",
             HTTP_GET,
             [](WebServer& server) {
-                StaticJsonDocument<128> doc;
+                StaticJsonDocument<1024> doc;
+
+                if (!(server.hasArg("led") || server.hasArg("sensor_ids") || server.hasArg("threshold")))  {
+                    const std::vector<SensorService *> sensors = SensorManager::getInstance()->getAllSensors();
+                    const LedService *ledService = LedService::getInstance();
+
+                    const JsonArray ledsArray = doc.createNestedArray("leds");
+                    const JsonArray sensorsArray = doc.createNestedArray("sensors");
+                    const JsonArray thresholdsArray = doc.createNestedArray("thresholds");
+
+
+                    const JsonObject ledObj = ledsArray.createNestedObject();
+                    const int status = ledService->getStatus();
+                    const int pos = ledService->getLedPos();
+
+                    ledObj["status"] = status;
+                    ledObj["pos"] = pos;
+
+                    for (SensorService *sensorService : sensors) {
+                        if (!sensorService) continue;
+                        JsonObject sensorObj = sensorsArray.createNestedObject();
+                        sensorObj["id"] = sensorService->getId();
+                        sensorObj["name"] = sensorService->getName();
+                        sensorObj["val"] = sensorService->readSensor();
+                        sensorObj["unit"] = sensorService->getUnit();
+                        sensorObj["pos"] = sensorService->getSensorPos();
+                    }
+
+                    const JsonObject thresholdObj = thresholdsArray.createNestedObject();
+                    thresholdObj["sensor"] = ledService->getThresholdSensor();
+                    thresholdObj["val"] = ledService->getThresholdValue();
+                    thresholdObj["mode"] = ledService->getThresholdMode();
+                }
 
                 if (server.hasArg("led")) {
                         const JsonArray ledsArray = doc.createNestedArray("leds");
@@ -222,6 +254,7 @@ HandlerList::HandlerList() {
                         const std::vector<SensorService *> sensors = SensorManager::getInstance()->getSensorsByIds(sensorIds);
                         for (SensorService *sensorService : sensors) {
                             if (!sensorService) continue;
+                            printf("Sensor détecte : %s id : %d val : %f \n ", sensorService->getName().c_str(), sensorService->getId(), sensorService->readSensor());
                             JsonObject sensorObj = sensorsArray.createNestedObject();
                             sensorObj["id"] = sensorService->getId();
                             sensorObj["name"] = sensorService->getName();
@@ -244,6 +277,7 @@ HandlerList::HandlerList() {
                     }
                 String json;
                 serializeJson(doc, json);
+                printf("Json : %s\n", json.c_str());
                 server.send(200, "application/json", json);
                 },
                 "Recupere des informations combinees (led, sensors, threshold)"

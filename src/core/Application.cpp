@@ -135,10 +135,10 @@ void Application::updateLeds() {
 
         SensorService* sensor = sensors->getSensorById(thresholdSensor);
         if (sensor) {
-            leds->updateLedThreshold(
-                sensor->readSensor(),
-                sensor->getOldValue()
-            );
+
+            float oldVal = sensor->getOldValue();
+            float newVal = sensor->readSensor();
+            leds->updateLedThreshold(newVal, oldVal);
         }
     }
 }

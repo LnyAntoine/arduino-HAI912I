@@ -16,7 +16,7 @@ int LedService::getLedPos() const {
 }
 
 // Configure un seuil de declenchement pour la LED
-void LedService::setSensorTreshold(int sensorNumber, int tresholdVal,int mode) {
+void LedService::setSensorTreshold(int sensorNumber, float tresholdVal,int mode) {
     threshold = tresholdVal;
     sensor_threshold_nb = sensorNumber;
     threshold_mode = mode;
@@ -30,7 +30,7 @@ void LedService::deleteThreshold() {
 }
 
 // Met a jour l'etat de la LED en fonction du seuil
-void LedService::updateLedThreshold(int value,int oldValue) {
+void LedService::updateLedThreshold(float value,float oldValue) {
     if (threshold == -1) return;
     if (threshold_mode == -1) return;
 
@@ -53,9 +53,11 @@ void LedService::updateLedThreshold(int value,int oldValue) {
         }
     }
     else if (threshold_mode == 2) {
+        printf(" Old value : %2f  Value : %2f  Threshold : %2f\n", oldValue, value, threshold);
         // Mode switch (bascule au passage du seuil)
         if ((value > threshold && oldValue < threshold)||(
             value < threshold && oldValue > threshold)) {
+            printf("Changement led");
             changeStatus();
         }
     }

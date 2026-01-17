@@ -12,7 +12,7 @@ protected:
 
     int ledPosition;
     int sensor_threshold_nb;
-    int threshold;
+    float threshold;
     int led_status;
     int threshold_mode;
 
@@ -23,7 +23,7 @@ public:
 
     int getLedPos() const;
 
-    void setSensorTreshold(int sensorNumber, int tresholdVal, int mode);
+    void setSensorTreshold(int sensorNumber, float tresholdVal, int mode);
 
     void deleteThreshold();
 
@@ -43,7 +43,7 @@ public:
 
     int getThresholdSensor() const;
 
-    void updateLedThreshold(int value, int oldValue);
+    void updateLedThreshold(float value, float oldValue);
 };
 
 
