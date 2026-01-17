@@ -22,5 +22,7 @@ class SensorService {
 
     virtual int getSensorPos() const;
 
+    virtual float getValue();
+
 };
 #endif //UNTITLED_SENSORSERVICE_H

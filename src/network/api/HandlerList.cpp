@@ -219,7 +219,7 @@ HandlerList::HandlerList() {
                         JsonObject sensorObj = sensorsArray.createNestedObject();
                         sensorObj["id"] = sensorService->getId();
                         sensorObj["name"] = sensorService->getName();
-                        sensorObj["val"] = sensorService->readSensor();
+                        sensorObj["val"] = sensorService->getValue();
                         sensorObj["unit"] = sensorService->getUnit();
                         sensorObj["pos"] = sensorService->getSensorPos();
                     }
@@ -254,11 +254,10 @@ HandlerList::HandlerList() {
                         const std::vector<SensorService *> sensors = SensorManager::getInstance()->getSensorsByIds(sensorIds);
                         for (SensorService *sensorService : sensors) {
                             if (!sensorService) continue;
-                            printf("Sensor détecte : %s id : %d val : %f \n ", sensorService->getName().c_str(), sensorService->getId(), sensorService->readSensor());
                             JsonObject sensorObj = sensorsArray.createNestedObject();
                             sensorObj["id"] = sensorService->getId();
                             sensorObj["name"] = sensorService->getName();
-                            sensorObj["val"] = sensorService->readSensor();
+                            sensorObj["val"] = sensorService->getValue();
                             sensorObj["unit"] = sensorService->getUnit();
                             sensorObj["pos"] = sensorService->getSensorPos();
                         }
@@ -307,7 +306,7 @@ void HandlerList::handleSingleSensor(WebServer& server, const int sensor) {
     JsonObject sensorObj = sensorsArray.createNestedObject();
     sensorObj["id"] = sensorService->getId();
     sensorObj["name"] = sensorService->getName();
-    sensorObj["val"] = sensorService->readSensor();
+    sensorObj["val"] = sensorService->getValue();
     sensorObj["unit"] = sensorService->getUnit();
     sensorObj["pos"] = sensorService->getSensorPos();
 
@@ -335,7 +334,7 @@ void HandlerList::handleAllSensors(WebServer& server) {
         JsonObject sensorObj = sensorsArray.createNestedObject();
         sensorObj["id"] = sensorService->getId();
         sensorObj["name"] = sensorService->getName();
-        sensorObj["val"] = sensorService->readSensor();
+        sensorObj["val"] = sensorService->getValue();
         sensorObj["unit"] = sensorService->getUnit();
         sensorObj["pos"] = sensorService->getSensorPos();
     }
@@ -366,7 +365,7 @@ void HandlerList::handleMultipleSensors(WebServer& server, const String& ids) {
         JsonObject sensorObj = sensorsArray.createNestedObject();
         sensorObj["id"] = sensorService->getId();
         sensorObj["name"] = sensorService->getName();
-        sensorObj["val"] = sensorService->readSensor();
+        sensorObj["val"] = sensorService->getValue();
         sensorObj["unit"] = sensorService->getUnit();
         sensorObj["pos"] = sensorService->getSensorPos();
     }

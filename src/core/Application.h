@@ -25,16 +25,20 @@ private:
     const int nbMenu;
     unsigned long lastDisplayUpdate;
     unsigned long lastLedUpdate;
+    unsigned long lastSensorUpdate;
 
     // Constantes
     static constexpr unsigned long DISPLAY_UPDATE_INTERVAL = 1000;
     static constexpr unsigned long LED_UPDATE_INTERVAL = 500;
+    static constexpr unsigned long SENSOR_UPDATE_INTERVAL = 500;
 
     // Méthodes privées
     void initializeWiFi();
     void handleButtonEvents();
     void updateDisplay();
     void updateLeds();
+    static void updateSensor(SensorService *sensor);
+    void updateSensors();
 
 public:
     Application();

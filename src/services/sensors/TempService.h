@@ -28,6 +28,7 @@ class TempService : public SensorService {
     float getOldValue() const override;
     std::string getUnit() const override;
     static TempService* getInstance();
+    float getValue() override {return value;}
 
 };
 
