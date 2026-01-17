@@ -28,6 +28,7 @@ class LightService : public SensorService{
     std::string getUnit() const override;
     int getSensorPos() const override;
     static LightService *getInstance();
+    float getValue() override {return value;}
 
 };
 

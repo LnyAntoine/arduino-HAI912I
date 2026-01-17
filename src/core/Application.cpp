@@ -14,6 +14,7 @@ Application::Application()
     , nbMenu(4)
     , lastDisplayUpdate(0)
     , lastLedUpdate(0)
+    , lastSensorUpdate(0)
 {
 }
 
@@ -90,6 +91,7 @@ void Application::update() {
     // Gestion des evenements
     handleButtonEvents();
     updateDisplay();
+    updateSensors();
     updateLeds();
 }
 
@@ -137,8 +139,24 @@ void Application::updateLeds() {
         if (sensor) {
 
             float oldVal = sensor->getOldValue();
-            float newVal = sensor->readSensor();
+            float newVal = sensor->getValue();
             leds->updateLedThreshold(newVal, oldVal);
         }
     }
 }
+
+void Application::updateSensor(SensorService *sensor) {
+    if (!sensor) return;
+    sensor->readSensor();
+}
+
+void Application::updateSensors() {
+    const unsigned long currentMillis = millis();
+    if (currentMillis - lastSensorUpdate >= SENSOR_UPDATE_INTERVAL) {
+        lastSensorUpdate = currentMillis;
+        for (SensorService *sensor : sensors->getAllSensors()) {
+            updateSensor(sensor);
+        }
+    }
+}
+

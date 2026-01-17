@@ -90,7 +90,7 @@ void DisplayService::showSensorData(const int sensorId) {
 
     clear();
     tft.setCursor(10, 70);
-    tft.printf("%s: \n %f %s", sensor->getName().c_str(), sensor->readSensor(), sensor->getUnit().c_str());
+    tft.printf("%s: \n %f %s", sensor->getName().c_str(), sensor->getValue(), sensor->getUnit().c_str());
 }
 
 void DisplayService::clear() {
