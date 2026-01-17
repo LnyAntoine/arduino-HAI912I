@@ -1,58 +1,58 @@
-# Projet TTGO-Meteo
+# Projet TTGO-Météo
 
-Station meteo connectee basee sur ESP32 avec ecran TFT, capteurs et API REST.
+Station météo connectée basée sur ESP32 avec écran TFT, capteurs et API REST.
 
-## Materiel requis
+## Matériel requis
 
-- TTGO T-Display (ESP32 avec ecran TFT 135x240)
-- Capteurs de temperature et luminosite
+- TTGO T-Display (ESP32 avec écran TFT 135x240)
+- Capteurs de température et luminosité
 - LED de notification
 - 2 boutons (gauche/droit)
 
 ## Installation
 
-### Prerequisites
+### Prérequis
 
 - PlatformIO Core ou PlatformIO IDE
-- Cable USB pour programmer l'ESP32
-- Port serie disponible (COM3 par defaut)
+- Câble USB pour programmer l'ESP32
+- Port série disponible (COM3 par défaut)
 
 ### Configuration WiFi
 
-Avant de compiler, configurez vos identifiants WiFi dans `src/config/wifiConfig.h`:
+Avant de compiler, configurez vos identifiants WiFi dans `src/config/wifiConfig.h` :
 
 ```cpp
 #define WIFI_SSID "VotreSSID"
 #define WIFI_PASSWORD "VotreMotDePasse"
 ```
 
-Note: Ce fichier est ignore par Git pour proteger vos identifiants.
+Note : ce fichier est ignoré par Git pour protéger vos identifiants.
 
 ### Compilation et upload
 
-Compilation seule:
+Compilation seule :
 ```bash
 pio run
 ```
 
-Compilation et upload sur l'ESP32:
+Compilation et upload sur l'ESP32 :
 ```bash
 pio run --target upload
 ```
 
-Moniteur serie (pour voir les logs):
+Moniteur série (pour voir les logs) :
 ```bash
 pio device monitor
 ```
 
-Tout en une commande:
+Tout en une commande :
 ```bash
 pio run --target upload && pio device monitor
 ```
 
-### Configuration du port serie
+### Configuration du port série
 
-Si votre ESP32 n'est pas sur COM3, modifiez `platformio.ini`:
+Si votre ESP32 n'est pas sur COM3, modifiez `platformio.ini` :
 ```ini
 upload_port = COMX
 monitor_port = COMX
@@ -60,15 +60,15 @@ monitor_port = COMX
 
 ## Tests unitaires
 
-Le projet contient 45 tests unitaires repartis en 5 suites.
+Le projet contient 45 tests unitaires répartis en 5 suites.
 
-### Executer tous les tests
+### Exécuter tous les tests
 
 ```bash
 pio test -e lilygo-t-display --upload-port COM3
 ```
 
-### Executer une suite specifique
+### Exécuter une suite spécifique
 
 ```bash
 pio test -f test_string_utils -e lilygo-t-display
@@ -80,82 +80,82 @@ pio test -f test_sensor_manager -e lilygo-t-display
 
 ### Suites de tests disponibles
 
-- **test_string_utils** (8 tests): Fonctions utilitaires de parsing
-- **test_led_service** (13 tests): Logique LED et gestion des seuils
-- **test_route** (11 tests): Routes API et methodes HTTP
-- **test_button_service** (3 tests): Service de detection des boutons
-- **test_sensor_manager** (10 tests): Gestion des capteurs
+- **test_string_utils** (8 tests) : Fonctions utilitaires de parsing
+- **test_led_service** (13 tests) : Logique LED et gestion des seuils
+- **test_route** (11 tests) : Routes API et méthodes HTTP
+- **test_button_service** (3 tests) : Service de détection des boutons
+- **test_sensor_manager** (10 tests) : Gestion des capteurs
 
 ## API REST
 
-Une fois l'ESP32 connecte au WiFi, l'API REST est accessible via l'adresse IP affichee sur l'ecran.
+Une fois l'ESP32 connecté au WiFi, l'API REST est accessible via l'adresse IP affichée sur l'écran.
 
 ### Routes disponibles
 
 #### Documentation
 
 **GET /help**
-- Description: Liste toutes les routes avec leurs methodes et descriptions
-- Reponse: JSON avec tableau de routes
+- Description : Liste toutes les routes avec leurs méthodes et descriptions
+- Réponse : JSON avec tableau de routes
 
 #### LED
 
 **POST /led/on**
-- Description: Allume la LED
-- Reponse: Texte de confirmation
+- Description : Allume la LED
+- Réponse : Texte de confirmation
 
 **POST /led/off**
-- Description: Eteint la LED
-- Reponse: Texte de confirmation
+- Description : Éteint la LED
+- Réponse : Texte de confirmation
 
 **POST /led/toggle**
-- Description: Inverse l'etat de la LED
-- Reponse: JSON avec le nouvel etat
+- Description : Inverse l'état de la LED
+- Réponse : JSON avec le nouvel état
 
 **GET /led**
-- Description: Recupere l'etat actuel de la LED
-- Reponse: `{"status": 0|1, "pos": <pin>}`
+- Description : Récupère l'état actuel de la LED
+- Réponse (exemple) : `{"status": 1, "pos": 34}`  // status : 0 (éteint) ou 1 (allumé)
 
 #### Seuils LED
 
 **POST /led/threshold**
-- Description: Configure un seuil de declenchement automatique
-- Body (JSON):
+- Description : Configure un seuil de déclenchement automatique
+- Body (JSON) — exemple :
   ```json
   {
-    "sensor": <id_capteur>,
-    "val": <valeur_seuil>,
-    "mode": <0|1|2>
+    "sensor": 0,
+    "val": 500,
+    "mode": 0
   }
   ```
-- Modes:
-  - 0: Superieur (allume si valeur > seuil)
-  - 1: Inferieur (allume si valeur < seuil)
-  - 2: Switch (bascule au franchissement)
+- Modes :
+  - 0 : Supérieur (allume si valeur > seuil)
+  - 1 : Inférieur (allume si valeur < seuil)
+  - 2 : Switch (bascule au franchissement)
 
 **DELETE /led/threshold**
-- Description: Supprime le seuil configure
-- Reponse: Texte de confirmation
+- Description : Supprime le seuil configuré
+- Réponse : Texte de confirmation
 
 **GET /led/threshold**
-- Description: Recupere la configuration du seuil
-- Reponse: `{"sensor": <id>, "val": <seuil>, "mode": <mode>}`
+- Description : Récupère la configuration du seuil
+- Réponse (exemple) : `{"sensor": 0, "val": 500, "mode": 0}`
 
 #### Capteurs
 
 **GET /sensor**
-- Description: Recupere les donnees des capteurs
-- Parametres optionnels:
-  - `?id=<n>`: Capteur specifique
-  - `?ids=<n1,n2,n3>`: Plusieurs capteurs
-  - Sans parametre: Tous les capteurs
-- Reponse: 
+- Description : Récupère les données des capteurs
+- Paramètres optionnels :
+  - `?id=<n>` : Capteur spécifique
+  - `?ids=<n1,n2,n3>` : Plusieurs capteurs
+  - Sans paramètre : Tous les capteurs
+- Réponse :
   ```json
   {
     "sensors": [
       {
         "id": 0,
-        "name": "Luminosite",
+        "name": "Luminosité",
         "val": 512.5,
         "unit": "lux",
         "pos": 34
@@ -164,15 +164,15 @@ Une fois l'ESP32 connecte au WiFi, l'API REST est accessible via l'adresse IP af
   }
   ```
 
-#### Status global
+#### Statut global
 
 **GET /status**
-- Description: Recupere plusieurs informations combinees
-- Parametres:
-  - `?led=1`: Infos LED
-  - `?sensor_ids=<n1,n2>`: Capteurs specifiques
-  - `?threshold=1`: Config seuil
-- Reponse: JSON avec les infos demandees
+- Description : Récupère plusieurs informations combinées
+- Paramètres :
+  - `?led=1` : Infos LED
+  - `?sensor_ids=<n1,n2>` : Capteurs spécifiques
+  - `?threshold=1` : Config seuil
+- Réponse : JSON avec les infos demandées
 
 ### Exemples d'utilisation
 
@@ -194,49 +194,49 @@ curl http://<ip_esp32>/help
 
 ## Architecture du projet
 
-Le projet suit une architecture MVP (Model-View-Presenter) adaptee pour systemes embarques.
+Le projet suit une architecture MVP (Model-View-Presenter) adaptée pour systèmes embarqués.
 
 ```
 src/
-├── main.cpp                    Point d'entree minimal
+├── main.cpp                    Point d'entrée minimal
 ├── core/
 │   ├── Application.h/cpp       Orchestrateur principal (Presenter)
 ├── services/
 │   ├── display/
-│   │   └── DisplayService      Gestion de l'ecran TFT (View)
+│   │   └── DisplayService      Gestion de l'écran TFT (View)
 │   ├── input/
-│   │   └── ButtonService       Detection des boutons
+│   │   └── ButtonService       Détection des boutons
 │   ├── output/
-│   │   └── LedService          Controle LED et seuils
+│   │   └── LedService          Contrôle LED et seuils
 │   └── sensors/
 │       ├── SensorManager       Gestionnaire de capteurs (Model)
 │       ├── SensorService       Interface capteur
-│       ├── LightService        Capteur de luminosite
-│       └── TempService         Capteur de temperature
+│       ├── LightService        Capteur de luminosité
+│       └── TempService         Capteur de température
 ├── network/
 │   ├── api/
 │   │   ├── APIServer           Serveur HTTP REST
 │   │   ├── HandlerList         Liste des routes
 │   │   └── Route               Classe route avec handler
 │   └── OTA/
-│       └── OTAManager          Mises a jour OTA
+│       └── OTAManager          Mises à jour OTA
 ├── utils/
 │   └── StringUtils             Fonctions utilitaires
 └── config/
     ├── config.h                Pins et constantes
-    └── wifiConfig.h            Credentials WiFi (ignore par Git)
+    └── wifiConfig.h            Identifiants WiFi (ignoré par Git)
 ```
 
-### Flux de donnees
+### Flux de données
 
 ```
 Utilisateur → Boutons → ButtonService → Application
                                           ↓
-Hardware → Capteurs → SensorManager → Application → DisplayService → Ecran
+Hardware → Capteurs → SensorManager → Application → DisplayService → Écran
                                           ↓
                                        LedService → LED
                                           ↓
-Reseau → APIServer → HandlerList → Services
+Réseau → APIServer → HandlerList → Services
 ```
 
 ## Description des classes
@@ -244,136 +244,135 @@ Reseau → APIServer → HandlerList → Services
 ### Core
 
 **Application**
-Orchestrateur principal de l'application. Initialise tous les services, gere la boucle principale et coordonne les interactions entre composants.
+Orchestrateur principal de l'application. Initialise tous les services, gère la boucle principale et coordonne les interactions entre composants.
 
 ### Services
 
 **DisplayService**
-Gere l'affichage sur l'ecran TFT. Affiche le statut WiFi, les donnees des capteurs, l'etat de la LED et les informations de seuil. Utilise un systeme de menus navigables.
+Gère l'affichage sur l'écran TFT. Affiche le statut WiFi, les données des capteurs, l'état de la LED et les informations de seuil. Utilise un système de menus navigables.
 
 **ButtonService**
-Detecte les appuis sur les boutons gauche et droit avec debounce anti-rebond (50ms) et distinction entre appui court et long (1000ms). Retourne des evenements de type ButtonEvent.
+Détecte les appuis sur les boutons gauche et droit avec anti-rebond (50 ms) et distinction entre appui court et long (1000 ms). Retourne des événements de type ButtonEvent.
 
 **LedService**
-Controle la LED et gere les seuils de declenchement automatique. Supporte trois modes: superieur, inferieur et switch (bascule). Singleton.
+Contrôle la LED et gère les seuils de déclenchement automatique. Supporte trois modes : supérieur, inférieur et switch (bascule). Singleton.
 
 **SensorManager**
-Gestionnaire centralise de tous les capteurs. Permet d'acceder aux capteurs par ID ou par liste d'IDs. Singleton.
+Gestionnaire centralisé de tous les capteurs. Permet d'accéder aux capteurs par ID ou par liste d'IDs. Singleton.
 
 **SensorService**
-Interface abstraite pour tous les capteurs. Definit les methodes communes: lecture, nom, unite, position.
+Interface abstraite pour tous les capteurs. Définit les méthodes communes : lecture, nom, unité, position.
 
 **LightService**
-Capteur de luminosite. Herite de SensorService. Lit la valeur analogique d'un photoresistor.
+Capteur de luminosité. Hérite de SensorService. Lit la valeur analogique d'un photorésistor.
 
 **TempService**
-Capteur de temperature. Herite de SensorService. Lit la temperature ambiante.
+Capteur de température. Hérite de SensorService. Lit la température ambiante.
 
 ### Network
 
 **APIServer**
-Serveur HTTP REST sur port 80. Enregistre les routes depuis HandlerList et traite les requetes clientes. Utilise WebServer d'ESP32.
+Serveur HTTP REST sur le port 80. Enregistre les routes depuis HandlerList et traite les requêtes clientes. Utilise WebServer d'ESP32.
 
 **HandlerList**
-Contient toutes les routes de l'API avec leurs handlers (lambdas). Chaque route associe un chemin, une methode HTTP et une fonction de traitement.
+Contient toutes les routes de l'API avec leurs handlers (lambdas). Chaque route associe un chemin, une méthode HTTP et une fonction de traitement.
 
 **Route**
-Encapsule une route API: chemin, methode HTTP, handler et description. Fournit des methodes pour recuperer ces informations et convertir la methode en string.
+Encapsule une route API : chemin, méthode HTTP, handler et description. Fournit des méthodes pour récupérer ces informations et convertir la méthode en chaîne.
 
 **OTAManager**
-Gere les mises a jour Over-The-Air. Permet de flasher l'ESP32 via WiFi sans cable. Configure les callbacks de progression et d'erreur.
+Gère les mises à jour Over-The-Air. Permet de flasher l'ESP32 via WiFi sans câble. Configure les callbacks de progression et d'erreur.
 
 ### Utils
 
 **StringUtils**
-Fonctions utilitaires pour la manipulation de strings. Contient splitIds (parse une liste d'IDs separees par virgule) et toInt (conversion string vers int).
+Fonctions utilitaires pour la manipulation de chaînes. Contient splitIds (parse une liste d'IDs séparées par virgule) et toInt (conversion string vers int).
 
-## Fonctionnalites
+## Fonctionnalités
 
 ### Navigation par boutons
 
-- **Bouton gauche**: Menu precedent
-- **Bouton droit**: Menu suivant
-- **Menus disponibles**:
+- **Bouton gauche** : Menu précédent
+- **Bouton droit** : Menu suivant
+- **Menus disponibles** :
   - Statut WiFi et IP
-  - Capteur de luminosite
-  - Capteur de temperature
-  - Etat de la LED
+  - Capteur de luminosité
+  - Capteur de température
+  - État de la LED
   - Configuration du seuil
 
 ### Seuils automatiques
 
-La LED peut s'allumer/eteindre automatiquement selon les valeurs des capteurs:
+La LED peut s'allumer/éteindre automatiquement selon les valeurs des capteurs :
 
-- **Mode 0 (Superieur)**: LED allumee si capteur > seuil
-- **Mode 1 (Inferieur)**: LED allumee si capteur < seuil
-- **Mode 2 (Switch)**: LED bascule a chaque franchissement du seuil
+- **Mode 0 (Supérieur)** : LED allumée si capteur > seuil
+- **Mode 1 (Inférieur)** : LED allumée si capteur < seuil
+- **Mode 2 (Switch)** : LED bascule à chaque franchissement du seuil
 
-Exemple: Allumer la LED quand la luminosite depasse 500 lux:
+Exemple : allumer la LED quand la luminosité dépasse 500 lux :
 ```bash
 curl -X POST http://<ip>/led/threshold -d '{"sensor":0,"val":500,"mode":0}'
 ```
 
-### Mise a jour OTA
+### Mise à jour OTA
 
-Configurez PlatformIO pour uploader via OTA:
+Configurez PlatformIO pour uploader via OTA :
 ```bash
 pio run --target upload --upload-port <ip_esp32>
 ```
 
 Ou utilisez l'IDE Arduino avec l'outil ESP32 OTA.
 
-## Dependances
+## Dépendances
 
-- **ArduinoJson** 6.21.0: Serialisation/deserialisation JSON
-- **TFT_eSPI** 2.5.43: Pilote ecran TFT
-- **WiFi**: Bibliotheque ESP32 standard
-- **WebServer**: Serveur HTTP ESP32
-- **ArduinoOTA**: Mises a jour OTA
+- **ArduinoJson** 6.21.0 : Sérialisation/désérialisation JSON
+- **TFT_eSPI** 2.5.43 : Pilote écran TFT
+- **WiFi** : Bibliothèque ESP32 standard
+- **WebServer** : Serveur HTTP ESP32
+- **ArduinoOTA** : Mises à jour OTA
 
-## Configuration materielle
+## Configuration matérielle
 
-### Pins utilisees
+### Pins utilisées
 
-Voir `src/config/config.h` pour la configuration complete des pins.
+Voir `src/config/config.h` pour la configuration complète des pins.
 
-- **Ecran TFT**: GPIO 19 (MOSI), 18 (SCLK), 5 (CS), 16 (DC), 23 (RST), 4 (BL)
-- **Boutons**: GPIO 0 (gauche), 35 (droit)
-- **LED**: Voir LED_PIN dans config.h
-- **Capteurs**: Voir config.h pour les pins ADC
+- **Écran TFT** : GPIO 19 (MOSI), 18 (SCLK), 5 (CS), 16 (DC), 23 (RST), 4 (BL)
+- **Boutons** : GPIO 0 (gauche), 35 (droit)
+- **LED** : Voir LED_PIN dans config.h
+- **Capteurs** : Voir config.h pour les pins ADC
 
-### Consommation memoire
+### Consommation mémoire
 
-- **RAM**: ~15% (49 Ko / 327 Ko)
-- **Flash**: ~69% (906 Ko / 1310 Ko)
+- **RAM** : ~15% (49 Ko / 327 Ko)
+- **Flash** : ~69% (906 Ko / 1310 Ko)
 
-## Troubleshooting
+## Dépannage
 
 ### L'ESP32 ne se connecte pas au WiFi
 
-Verifiez les identifiants dans `wifiConfig.h` et que le reseau est en 2.4GHz (pas 5GHz).
+Vérifiez les identifiants dans `wifiConfig.h` et que le réseau est en 2.4 GHz (pas 5 GHz).
 
 ### Port COM introuvable
 
 Installez les pilotes USB-Serial (CP210x ou CH340 selon votre carte).
 
-### Ecran blanc ou pas d'affichage
+### Écran blanc ou pas d'affichage
 
-Verifiez les pins TFT dans platformio.ini et que le backlight est allume (GPIO 4).
+Vérifiez les pins TFT dans platformio.ini et que le rétroéclairage est allumé (GPIO 4).
 
 ### API inaccessible
 
-Verifiez l'IP affichee sur l'ecran et que vous etes sur le meme reseau WiFi.
+Vérifiez l'IP affichée sur l'écran et que vous êtes sur le même réseau WiFi.
 
-### Tests en echec
+### Tests en échec
 
-Assurez-vous que l'ESP32 est bien connecte sur le bon port serie avant de lancer les tests.
+Assurez-vous que l'ESP32 est bien connecté sur le bon port série avant de lancer les tests.
 
 ## Licence
 
-Ce projet est fourni tel quel pour usage educatif et personnel.
+Ce projet est fourni tel quel pour usage éducatif et personnel.
 
 ## Auteur
 
-Developpe avec PlatformIO et ESP32 Arduino Framework.
-
+Développé avec PlatformIO et le framework Arduino pour ESP32.
